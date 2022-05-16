@@ -9,3 +9,7 @@ output "application_endpoint" {
 output "asg_name" {
   value = aws_autoscaling_group.terramino.name
 }
+
+output "keyname" {
+  value = aws_key_pair.deployer1.key_name
+}

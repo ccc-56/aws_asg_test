@@ -36,12 +36,18 @@ data "aws_ami" "amazon-linux" {
   }
 }
 
+resource "aws_key_pair" "deployer1" {
+  key_name   = "dong1"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXOh4GPEvI2Eb8HUZ3cntJs4fLqaDyPRVcWhTHtY8dlbj0TuWtdP8Iw+A/bsn6U6TJagLUpUVwl//gY3ppR809UOev3zCQyQFnyLDiPV8VZcE+722bq75tTTcpuTPC2m7wRzICHpx2K9tbKv9XZDxOjo8ckVrQhF2qIk8wEOlrgZWo90ecHgJxxmbgcD8LBgBB6r/QZzWx2crRJ05tn0mKNZfXFJvvVsjXqlivQEhA7JXulLlxW6CfpHx7kXhUFFoE5FDk1VUzWFJupBeMHEwDMZF2PZ2lznY1xiaiHqo/+uZvfUKNdHNv7fEbInaa5+VMogV5+Tx7XPOV/BaXVrU3"
+}
+
 resource "aws_launch_configuration" "terramino" {
   name_prefix     = "learn-terraform-aws-asg-"
   image_id        = data.aws_ami.amazon-linux.id
   instance_type   = "t2.micro"
   user_data       = file("user-data.sh")
   security_groups = [aws_security_group.terramino_instance.id]
+  key_name = aws_key_pair.deployer1.key_name
 
   lifecycle {
     create_before_destroy = true
@@ -98,7 +104,7 @@ resource "aws_autoscaling_attachment" "terramino" {
 resource "aws_security_group" "terramino_instance" {
   name = "learn-asg-terramino-instance"
   ingress {
-    from_port       = 80
+    from_port       = 22
     to_port         = 444
     protocol        = "tcp"
     security_groups = [aws_security_group.terramino_lb.id]
@@ -117,7 +123,7 @@ resource "aws_security_group" "terramino_instance" {
 resource "aws_security_group" "terramino_lb" {
   name = "learn-asg-terramino-lb"
   ingress {
-    from_port   = 80
+    from_port   = 22
     to_port     = 444
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
