@@ -18,10 +18,10 @@ module "vpc" {
   version = "2.77.0"
 
   name = "main-vpc"
-  cidr = "10.89.0.0/16"
+  cidr = "10.97.0.0/16"
 
   azs                  = data.aws_availability_zones.available.names
-  public_subnets       = ["10.89.4.0/24", "10.89.5.0/24", "10.89.6.0/24"]
+  public_subnets       = ["10.97.4.0/24", "10.97.5.0/24", "10.97.6.0/24"]
   enable_dns_hostnames = true
   enable_dns_support   = true
 }
